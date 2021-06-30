@@ -1,0 +1,35 @@
+@media only screen and (max-width: 600px) {
+    .live-matches .img{
+        width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+    }
+    .img-container{
+        padding-right: 0px !important;
+    }
+    main{
+        margin-top: 5% !important;
+    }
+    nav, .sub-nav, main, footer, .main-post-content{
+        padding-right: 0% !important;
+    }
+    .border-right{
+        border: none !important;
+    }
+    footer .copyright{
+        float: none !important;
+        text-align: center !important;
+    }
+    footer{
+        text-align: center !important;
+    }
+    .desktop{
+        display: none !important;
+    }
+    .mobile{
+        display: block !important;
+    }
+    .border-bottom{
+        border-bottom: 1px solid whitesmoke !important;
+    }
+}
