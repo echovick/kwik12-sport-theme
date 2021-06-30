@@ -17,10 +17,10 @@
                 </div>
                 <div class="col-md-5 mt-3">
                     <div class="d-flex justify-content-center">
-                        <a href="" class="mx-3 txt-md txt-light">Home</a>
-                        <a href="" class="mx-3 txt-md txt-light">Features</a>
-                        <a href="" class="mx-3 txt-md txt-light">News</a>
-                        <a href="" class="mx-3 txt-md txt-light">Contacts</a>
+                        <a href="" class="mx-2 txt-md txt-light">Home</a>
+                        <a href="" class="mx-2 txt-md txt-light">Features</a>
+                        <a href="" class="mx-2 txt-md txt-light">News</a>
+                        <a href="" class="mx-2 txt-md txt-light">Contacts</a>
                     </div>
                 </div>
                 <div class="col-md-4 mt-3">

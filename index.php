@@ -69,8 +69,10 @@
                     <p class="txt-sm">Upcoming Matches</p>
                     <?php
                         foreach($upcoming_matches as $matches){
+                            $upcoming_match_date = $matches['upcoming_match_date'];
+                            $upcoming_match_date = date_create($upcoming_match_date);
                     ?>
-                        <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> - 5th Sept, 2021</p>
+                        <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> - <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
                         <hr>
                     <?php
                         }
@@ -90,12 +92,6 @@
                     </div>
                 </a>
                 <hr>
-                <!-- <a href="">
-                    <div class="row bg-red text-light p-4">
-                        <p class="txt-sm">September 8, 2018</p>
-                        <p class="txt-lg txt-bold">THE TOP CLUBS OPEN THE NEW SEASON</p>
-                    </div>
-                </a> -->
             <?php
                     }
                 }
@@ -108,16 +104,21 @@
             ?>
                 <a href="" class="">
                     <div class="row bg-red text-light px-4 pt-2 border-bottom">
-                        <p class="txt-xs">Live Now<br> <span class="txt-sm txt-bold">Nigeria Vs Biafra</span></p>
+                        <p class="txt-xs">Live Now<br> <span class="txt-sm txt-bold"><?php echo $live_teams_playing?></span></p>
                     </div>
                 </a>
                 <div class="bg-red text-light p-4">
                     <p class="txt-sm">Upcoming Matches</p>
-                    <p class="txt-md">England Vs London - 5th Sept, 2021</p>
-                    <hr>
-                    <p class="txt-md">England Vs London - 5th Sept, 2021</p>
-                    <hr>
-                    <p class="txt-md">England Vs London - 5th Sept, 2021</p>
+                    <?php
+                        foreach($upcoming_matches as $matches){
+                            $upcoming_match_date = $matches['upcoming_match_date'];
+                            $upcoming_match_date = date_create($upcoming_match_date);
+                    ?>
+                        <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> - <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
+                        <hr>
+                    <?php
+                        }
+                    ?>
                 </div>
             <?php
                 }
@@ -137,22 +138,28 @@
                         $home_icon = $scores['home_icon'] ?? '';
                         $away_icon = $scores['away_icon'] ?? '';
                         $score = $scores['score'] ?? '';
+
+                        // Get attachment image
+                        $home_icon = wp_get_attachment_image_src($home_icon[0]);
+                        $away_icon = wp_get_attachment_image_src($away_icon[0]);
+
+                        $match_date = date_create($match_date);
                 ?>
                     <div class="col-md-4 px-3">
                         <div class="row border-right">
                             <div class="col-md-3 col-3">
-                                <img src="http://fc-united.axiomthemes.com/wp-content/uploads/2018/11/go-4-copyright-400x400.png"
+                                <img src="<?php echo $home_icon[0]?>"
                                     alt="" class="w-100 mt-2 club-img">
                             </div>
                             <div class="col-md-6 col-6 text-center">
                                 <p>
-                                    <span class="txt-sm">July 11, 2018</span><br>
-                                    <span class="txt-xlg txt-bold text-dark"><?php echo $score?></span><br>
-                                    <span class="txt-sm">Premier League</span>
+                                    <span class="txt-sm"><?php echo date_format($match_date, 'M d, Y')?></span><br>
+                                    <span class="txt-xlg txt-bold text-dark"><?php if(!empty($score)){ echo $score; }else{ echo '-';}?></span><br>
+                                    <span class="txt-sm"><?php echo $competition?></span>
                                 </p>
                             </div>
                             <div class="col-md-3 col-3">
-                                <img src="http://fc-united.axiomthemes.com/wp-content/uploads/2018/11/go-4-copyright-400x400.png"
+                                <img src="<?php echo $away_icon[0]?>"
                                     alt="" class="w-100 mt-2 club-img">
                             </div>
                         </div>
@@ -179,21 +186,21 @@
                 <a href="" class="mr-3 mb-1 txt-md text-light">
                     All Posts
                 </a>
-                <a href="" class="mr-3 mb-1 txt-md text-light">
-                    Football Clubs
-                </a>
-                <a href="" class="mr-3 mb-1 txt-md text-light">
-                    Sports & Games
-                </a>
-                <a href="" class="mr-3 mb-1 txt-md text-light">
-                    Topics
-                </a>
-                <a href="" class="mr-3 mb-1 txt-md text-light">
-                    News
-                </a>
-                <a href="" class="mr-3 mb-1 txt-md text-light">
-                    Training
-                </a>
+                <?php
+                    $category = get_terms(array(
+                        'taxonomy' => 'category', 
+                        'hide_empty' => false
+                    ));
+                    if($category){
+                        foreach($category as $cat){
+                ?>
+                    <a href="<?php echo get_term_link($cat->term_id)?>" class="mr-3 mb-1 txt-md text-light">
+                        <?php echo $cat->name;?>
+                    </a>
+                <?php
+                        }
+                    }
+                ?>
             </div>
         </div>
         <div class="top-news-content row-100">
@@ -201,18 +208,23 @@
                 <?php
                     foreach($select_top_news as $top_news){
                         $the_news = get_post($top_news);
+                        $image = wp_get_attachment_image_src( get_post_thumbnail_id( $top_news ) );
+                        $content = $the_news->post_content;
+                        $date = $the_news->post_date;
+                        $date = date_create($date);
+                        $content = substr($content, 0, 300);
                 ?>
                     <div class="col-md-4 px-4">
                         <div class="row">
-                            <img src="<?php echo get_theme_file_uri('assets/imgs/jeffrey-f-lin-fR7JtPh6ZA8-unsplash.jpg')?>"
-                                alt="" class="w-100 rounded">
+                            <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>" alt="" class="w-100 news-img rounded">
                         </div>
                         <div class="row pt-4">
                             <p class="txt-red txt-sm"><span class="badge bg-red text-light mr-3 txt-sm p-2">News </span>
-                                November 19, 2018</p>
-                            <p class="txt-bold txt-lg"><?php echo $the_news->post_title?></p>
-                            <p class="txt-light txt-md">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia
-                                rerum non debitis assumenda impedit obcaecati voluptatem.</p>
+                                <?php echo date_format($date,'M d, Y');?></p>
+                            <a href="<?php echo get_permalink($top_news)?>" class="text-dark"><p class="txt-bold txt-lg"><?php echo $the_news->post_title?></p></a>
+                            <p class="txt-light txt-md">
+                                <?php echo $content.'...'?>
+                            </p>
                         </div>
                     </div>
                 <?php
@@ -238,18 +250,24 @@
                     <?php
                         $query = new WP_Query(array('post_type'=>'post', 'posts_per_page'=>'-1'));
                         while($query->have_posts()):$query->the_post();
+                            $image = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_id() ) );
+                            $content = $the_news->post_content;
+                            $date = $the_news->post_date;
+                            $date = date_create($date);
+                            $content = get_the_content();
+                            $content = substr($content, 0, 200);
+                            
                     ?>
                         <div class="row w-100 mb-3">
                             <div class="col-md-4 mb-3">
-                                <img src="<?php echo get_theme_file_uri('assets/imgs/jeffrey-f-lin-fR7JtPh6ZA8-unsplash.jpg')?>"
+                                <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>"
                                     alt="" class="w-100 rounded" style="height:100%;">
                             </div>
                             <div class="col-md-8">
                                 <p class="txt-red txt-sm"><span class="badge bg-red text-light mr-3 txt-sm p-2">News </span>
-                                    November 19, 2018</p>
+                                    <?php echo date_format($date,'M d, Y');?></p>
                                 <a href="<?php echo get_permalink();?>" class="text-dark"><p class="txt-bold txt-lg"><?php echo get_the_title();?></p></a>
-                                <p class="txt-light txt-md">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia
-                                    rerum non debitis assumenda.</p>
+                                <p class="txt-light txt-md"><?php echo $content;?></p>
                             </div>
                         </div>
                     <?php
