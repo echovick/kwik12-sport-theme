@@ -11,9 +11,11 @@
         $show_lates_news = get_post_meta(get_the_id(),'show_lates_news',true);
         $show_latestscore_section = get_post_meta(get_the_id(),'show_latestscore_section',true);
         $add_scores = get_post_meta(get_the_id(),'add_scores',true);
+        $select_sponsored_post = rwmb_meta('select_sponsored_post');
+        $post_or_ad = rwmb_meta('post_or_ad');
     endwhile;
 ?>
-<div class="sub-nav shadow">
+<!-- <div class="sub-nav shadow">
     <div class="row justify-content-center w-100">
         <a href="" class="mx-3 txt-md text-dark">Table of matches</a>
         <a href="" class="mx-3 txt-md text-dark">Sponsors</a>
@@ -24,7 +26,7 @@
         <a href="" class="mx-3 txt-md text-dark">About Fl</a>
         <a href="" class="mx-3 txt-md text-dark">Top Articles</a>
     </div>
-</div>
+</div> -->
 <main>
     <div class="row live-matches bg-red w-100">
         <!-- For headlines -->
@@ -35,63 +37,69 @@
                 $other_headlines = $other_headliners['other_headlines'];
 
                 $the_post = get_post($headline_post);
-                $image = wp_get_attachment_image_src( get_post_thumbnail_id( $headline_post ) );
+                $image = wp_get_attachment_image_src( $the_post->upload_featured_image );    
         ?>
-            <div class="col-md-8 col-12 img-container" style="padding-left: 0px !important; object-fit:cover; background-size:cover; background-image:url('<?php echo $image[0];?>');">
-                <p class="txt-xlg text-light txt-bold shadow px-5 w-90 pb-2" style="bottom:0; position:absolute;"><?php echo $the_post->post_title;?></p>
-            </div>
+        <div class="col-md-8 col-12 img-container desktop"
+            style="padding-left: 0px !important; object-fit:cover; background-size:cover; background-image:url('<?php echo $image[0];?>');">
+            <p class="txt-xlg text-light txt-bold shadow px-5 w-90 pb-2" style="bottom:0; position:absolute;">
+                <?php echo $the_post->post_title;?>
+            </p>
+        </div>
         <?php
             }elseif($banner_view == 'Live'){
                 $embed_link = $live_stream_settings['embed_link'] ?? '';
                 $live_teams_playing = $live_stream_settings['live_teams_playing'] ?? '';
                 $upcoming_matches = $live_stream_settings['upcoming_matches'] ?? '';
         ?>
-             <!-- For live stream -->
-            <div class="col-md-8 col-12 img-container" style="padding-left: 0px !important;">
-                <iframe style="width:100%; height:100%; border:none;" src="<?php echo $embed_link;?>"></iframe>
-            </div>        
+        <!-- For live stream -->
+        <div class="col-md-8 col-12 img-container" style="padding-left: 0px !important;">
+            <div id="player"></div>
+            <!-- <video data-html5-video="" preload="metadata" src="blob:https://bng.goalarab.com/ba515919-5861-494e-a5c6-f8a492224d89"></video> -->
+            <!-- <iframe style="width:100%; height:100%; border:none;" src="<?php echo $embed_link;?>"></iframe> -->
+        </div>
         <?php
             }
         ?>
-    
+
         <div class="col-md-4 col-12 desktop">
             <?php
                 if($banner_view == 'Live'){
             ?>
-                <a href="">
-                    <div class="bg-red text-light p-4">
-                        <p class="txt-sm">Live Now</p>
-                        <p class="txt-lg txt-bold"><?php echo $live_teams_playing?></p>
-                    </div>
-                </a> 
-                <hr>
+            <a href="">
                 <div class="bg-red text-light p-4">
-                    <p class="txt-sm">Upcoming Matches</p>
-                    <?php
+                    <p class="txt-sm">Live Now</p>
+                    <p class="txt-lg txt-bold"><?php echo $live_teams_playing?></p>
+                </div>
+            </a>
+            <hr>
+            <div class="bg-red text-light p-4">
+                <p class="txt-sm">Upcoming Matches</p>
+                <?php
                         foreach($upcoming_matches as $matches){
                             $upcoming_match_date = $matches['upcoming_match_date'];
                             $upcoming_match_date = date_create($upcoming_match_date);
                     ?>
-                        <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> - <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
-                        <hr>
-                    <?php
+                <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> -
+                    <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
+                <hr>
+                <?php
                         }
                     ?>
-                </div>
+            </div>
             <?php
                 }elseif($banner_view == 'Headline'){
                     $other_headlines = $other_headliners['other_headlines'];
                     foreach($other_headlines as $headlines){
                         $the_headline = get_post($headlines);
             ?>
-                <!-- Healine -->
-                <a href="">
-                    <div class="row bg-red text-light p-4">
-                        <p class="txt-sm">September 8, 2018</p>
-                        <p class="txt-lg txt-bold"><?php echo $the_headline->post_title;?></p>
-                    </div>
-                </a>
-                <hr>
+            <!-- Healine -->
+            <a href="">
+                <div class="row bg-red text-light p-4">
+                    <p class="txt-sm">September 8, 2018</p>
+                    <p class="txt-lg txt-bold"><?php echo $the_headline->post_title;?></p>
+                </div>
+            </a>
+            <hr>
             <?php
                     }
                 }
@@ -102,36 +110,67 @@
             <?php
                 if($banner_view == 'Live'){
             ?>
-                <a href="" class="">
-                    <div class="row bg-red text-light px-4 pt-2 border-bottom">
-                        <p class="txt-xs">Live Now<br> <span class="txt-sm txt-bold"><?php echo $live_teams_playing?></span></p>
-                    </div>
-                </a>
-                <div class="bg-red text-light p-4">
-                    <p class="txt-sm">Upcoming Matches</p>
-                    <?php
+            <a href="" class="">
+                <div class="row bg-red text-light px-4 pt-2 border-bottom">
+                    <p class="txt-xs">Live Now<br> <span class="txt-sm txt-bold"><?php echo $live_teams_playing?></span>
+                    </p>
+                </div>
+            </a>
+            <div class="bg-red text-light p-4">
+                <p class="txt-sm">Upcoming Matches</p>
+                <?php
                         foreach($upcoming_matches as $matches){
                             $upcoming_match_date = $matches['upcoming_match_date'];
                             $upcoming_match_date = date_create($upcoming_match_date);
                     ?>
-                        <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> - <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
-                        <hr>
-                    <?php
+                <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> -
+                    <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
+                <hr>
+                <?php
                         }
                     ?>
-                </div>
+            </div>
             <?php
+                }elseif($banner_view == 'Headline'){
+                    $other_headlines = $other_headliners['other_headlines'];
+                    foreach($other_headlines as $headlines){
+                        $the_headline = get_post($headlines);
+            ?>
+            <!-- Healine -->
+            <a href="">
+                <div class="row bg-red text-light p-4">
+                    <p class="txt-sm">September 8, 2018</p>
+                    <p class="txt-lg txt-bold"><?php echo $the_headline->post_title;?></p>
+                </div>
+            </a>
+            <hr>
+            <?php
+                    }
+
                 }
             ?>
         </div>
     </div>
+    <?php
+        if($banner_view == 'Live'){
+    ?>
+    <div class="text-center mx-auto mt-3">
+        <p class="txt-md mx-auto"><b>Disclaimer:</b> This stream found for free on the internet, we do not stream or host it, if
+            you think its illegal please send us a notification via contact form and we will remove the page
+            immediately.</p>
+        <p class="txt-md mx-auto">kwik12.com does not stream or host any audio or video straming content, we only link to the
+            channels and we dont take any responsibility about thos streamed channels.</p>
+    </div>
+    <?php
+        }
+    ?>
     <!-- Latest Scores Section -->
     <?php
         if($show_latestscore_section == "Yes"){
     ?>
-        <div class="row latest-scores-section my-4 shadow w-100 px-4 py-3">
-            <div class="row w-100">
-                <?php
+    <div class="row latest-scores-section my-4 shadow w-100 px-4 py-3">
+        <div class="row w-100">
+            <?php
                     foreach($add_scores as $scores){
                         $match_date = $scores['match_date'] ?? '';
                         $competition = $scores['competition'] ?? '';
@@ -145,30 +184,29 @@
 
                         $match_date = date_create($match_date);
                 ?>
-                    <div class="col-md-4 px-3">
-                        <div class="row border-right">
-                            <div class="col-md-3 col-3">
-                                <img src="<?php echo $home_icon[0]?>"
-                                    alt="" class="w-100 mt-2 club-img">
-                            </div>
-                            <div class="col-md-6 col-6 text-center">
-                                <p>
-                                    <span class="txt-sm"><?php echo date_format($match_date, 'M d, Y')?></span><br>
-                                    <span class="txt-xlg txt-bold text-dark"><?php if(!empty($score)){ echo $score; }else{ echo '-';}?></span><br>
-                                    <span class="txt-sm"><?php echo $competition?></span>
-                                </p>
-                            </div>
-                            <div class="col-md-3 col-3">
-                                <img src="<?php echo $away_icon[0]?>"
-                                    alt="" class="w-100 mt-2 club-img">
-                            </div>
-                        </div>
+            <div class="col-md-4 px-3">
+                <div class="row border-right">
+                    <div class="col-md-3 col-3">
+                        <img src="<?php echo $home_icon[0]?>" alt="" class="w-100 mt-2 club-img">
                     </div>
-                <?php
+                    <div class="col-md-6 col-6 text-center">
+                        <p>
+                            <span class="txt-sm"><?php echo date_format($match_date, 'M d, Y')?></span><br>
+                            <span
+                                class="txt-xlg txt-bold text-dark"><?php if(!empty($score)){ echo $score; }else{ echo '-';}?></span><br>
+                            <span class="txt-sm"><?php echo $competition?></span>
+                        </p>
+                    </div>
+                    <div class="col-md-3 col-3">
+                        <img src="<?php echo $away_icon[0]?>" alt="" class="w-100 mt-2 club-img">
+                    </div>
+                </div>
+            </div>
+            <?php
                     }
                 ?>
-            </div>
         </div>
+    </div>
     <?php
         }
     ?>
@@ -188,15 +226,15 @@
                 </a>
                 <?php
                     $category = get_terms(array(
-                        'taxonomy' => 'category', 
+                        'taxonomy' => 'label', 
                         'hide_empty' => false
                     ));
                     if($category){
                         foreach($category as $cat){
                 ?>
-                    <a href="<?php echo get_term_link($cat->term_id)?>" class="mr-3 mb-1 txt-md text-light">
-                        <?php echo $cat->name;?>
-                    </a>
+                <a href="<?php echo get_term_link($cat->term_id)?>" class="mr-3 mb-1 txt-md text-light">
+                    <?php echo $cat->name;?>
+                </a>
                 <?php
                         }
                     }
@@ -208,25 +246,31 @@
                 <?php
                     foreach($select_top_news as $top_news){
                         $the_news = get_post($top_news);
-                        $image = wp_get_attachment_image_src( get_post_thumbnail_id( $top_news ) );
-                        $content = $the_news->post_content;
+                        $image = wp_get_attachment_image_src( $the_news->upload_featured_image );
+                        $content = $the_news->content_section_group;
+                        $add_content_blocks = $content['add_content_blocks'] ?? '';
+                        $content = $add_content_blocks[0]['text_content'] ?? '';
+
                         $date = $the_news->post_date;
                         $date = date_create($date);
                         $content = substr($content, 0, 300);
                 ?>
-                    <div class="col-md-4 px-4">
-                        <div class="row">
-                            <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>" alt="" class="w-100 news-img rounded">
-                        </div>
-                        <div class="row pt-4">
-                            <p class="txt-red txt-sm"><span class="badge bg-red text-light mr-3 txt-sm p-2">News </span>
-                                <?php echo date_format($date,'M d, Y');?></p>
-                            <a href="<?php echo get_permalink($top_news)?>" class="text-dark"><p class="txt-bold txt-lg"><?php echo $the_news->post_title?></p></a>
-                            <p class="txt-light txt-md">
-                                <?php echo $content.'...'?>
-                            </p>
-                        </div>
+                <div class="col-md-4 px-4">
+                    <div class="row">
+                        <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>"
+                            alt="" class="w-100 news-img rounded">
                     </div>
+                    <div class="row pt-4">
+                        <p class="txt-red txt-sm"><span class="badge bg-red text-light mr-3 txt-sm p-2">News </span>
+                            <?php echo date_format($date,'M d, Y');?></p>
+                        <a href="<?php echo get_permalink($top_news)?>" class="text-dark">
+                            <p class="txt-bold txt-md"><?php echo $the_news->post_title?></p>
+                        </a>
+                        <p class="txt-light txt-sm">
+                            <?php echo $content.'...'?>
+                        </p>
+                    </div>
+                </div>
                 <?php
                     }
                 ?>
@@ -241,71 +285,79 @@
     <?php
         if($show_lates_news == "Yes"){
     ?>
-        <div class="latest-news-section row w-100 mt-4">
-            <div class="col-md-8">
-                <div class="top-news-header bg-blue-dark w-100 row">
-                    <p class="txt-lg txt-bold text-light">LATEST NEWS</p>
+    <div class="latest-news-section row mx-auto">
+        <div class="col-md-8 col-sm-12 col-12 mb-3">
+            <div class="top-news-header bg-blue-dark w-100 row">
+                <p class="txt-lg txt-bold text-light">LATEST NEWS</p>
+            </div>
+            <div class="py-4 px-3 row w-100 shadow">
+                <?php
+                    $query = new WP_Query(array('post_type'=>'post', 'posts_per_page'=>'-1'));
+                    while($query->have_posts()):$query->the_post();
+                        $post_id = get_the_id();
+                        $the_post = get_post($post_id);
+                        $image = wp_get_attachment_image_src( $the_post->upload_featured_image );
+                        $content = $the_post->content_section_group;
+                        $add_content_blocks = $content['add_content_blocks'] ?? '';
+                        $content = $add_content_blocks[0]['text_content'] ?? '';
+
+                        $date = $the_post->post_date;
+                        $date = date_create($date);
+                        $content = substr($content, 0, 200);      
+                ?>
+                <div class="row w-100 mb-3">
+                    <div class="col-md-4 mb-3">
+                        <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>"
+                            alt="" class="w-100 rounded" style="height:100%; object-fit:cover;">
+                    </div>
+                    <div class="col-md-8">
+                        <p class="txt-red txt-sm"><span class="badge bg-red text-light mr-3 txt-sm p-2">News </span>
+                            <?php echo date_format($date,'M d, Y');?></p>
+                        <a href="<?php echo get_permalink();?>" class="text-dark">
+                            <p class="txt-bold txt-md"><?php echo get_the_title();?></p>
+                        </a>
+                        <p class="txt-light txt-sm"><?php echo $content;?></p>
+                    </div>
                 </div>
-                <div class="py-4 px-3 row w-100 shadow">
-                    <?php
-                        $query = new WP_Query(array('post_type'=>'post', 'posts_per_page'=>'-1'));
-                        while($query->have_posts()):$query->the_post();
-                            $image = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_id() ) );
-                            $content = $the_news->post_content;
-                            $date = $the_news->post_date;
-                            $date = date_create($date);
-                            $content = get_the_content();
-                            $content = substr($content, 0, 200);
-                            
-                    ?>
-                        <div class="row w-100 mb-3">
-                            <div class="col-md-4 mb-3">
-                                <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>"
-                                    alt="" class="w-100 rounded" style="height:100%;">
-                            </div>
-                            <div class="col-md-8">
-                                <p class="txt-red txt-sm"><span class="badge bg-red text-light mr-3 txt-sm p-2">News </span>
-                                    <?php echo date_format($date,'M d, Y');?></p>
-                                <a href="<?php echo get_permalink();?>" class="text-dark"><p class="txt-bold txt-lg"><?php echo get_the_title();?></p></a>
-                                <p class="txt-light txt-md"><?php echo $content;?></p>
-                            </div>
-                        </div>
-                    <?php
+                <?php
                         endwhile;
                     ?>
-                </div>
-            </div>
-            <!-- Side Featured Posts -->
-            <div class="col-md-4">
-                <div class="top-news-header bg-blue-dark w-100 row my-3">
-                    <p class="txt-lg txt-bold text-light">SPONSORED</p>
-                </div>
-                <div class="px-4 pt-3">
-                    <div class="row w-100">
-                        <img src="<?php echo get_theme_file_uri('assets/imgs/jeffrey-f-lin-fR7JtPh6ZA8-unsplash.jpg')?>"
-                            alt="" class="w-100 rounded">
-                    </div>
-                    <div class="row pt-4">
-                        <p class="txt-bold txt-md">THE EXCELLENT RESULT OF JUNIOR LEAGUE GAMES</p>
-                        <p class="txt-light txt-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia rerum
-                            non debitis assumenda impedit obcaecati voluptatem.</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="px-4 pt-3">
-                    <div class="row w-100">
-                        <img src="<?php echo get_theme_file_uri('assets/imgs/jeffrey-f-lin-fR7JtPh6ZA8-unsplash.jpg')?>"
-                            alt="" class="w-100 rounded">
-                    </div>
-                    <div class="row pt-4">
-                        <p class="txt-bold txt-md">THE EXCELLENT RESULT OF JUNIOR LEAGUE GAMES</p>
-                        <p class="txt-light txt-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia rerum
-                            non debitis assumenda impedit obcaecati voluptatem.</p>
-                    </div>
-                </div>
-                <hr>
             </div>
         </div>
+        <!-- Side Featured Posts -->
+        <div class="col-md-4 col-sm-12 col-12 mb-3">
+            <div class="top-news-header bg-blue-dark w-100 row mb-3">
+                <p class="txt-lg txt-bold text-light">SPONSORED</p>
+            </div>
+            <?php
+                if(isset($post_or_ad)){
+                    if($post_or_ad == 'Post'){
+                        foreach($select_sponsored_post as $post){
+                            $the_post = get_post($post);
+                            $image = wp_get_attachment_image_src($the_post->upload_featured_image);
+                            $content = $the_post->content_section_group;
+                            $add_content_blocks = $content['add_content_blocks'] ?? '';
+                            $content = $add_content_blocks[0]['text_content'] ?? '';
+                            $content = substr($content, 0, 200);
+            ?>
+                <div class="px-4 pt-3">
+                    <div class="row w-100">
+                        <img src="<?php echo $image[0];?>" alt="alt" class="w-100 rounded" style="height:200px;"/>
+                        <img src="" alt="">
+                    </div>
+                    <div class="row pt-4">
+                        <p class="txt-bold txt-md"><?php echo $the_post->post_title;?></p>
+                        <p class="txt-light txt-sm"><?php echo $content;?></p>
+                    </div>
+                </div>
+                <hr>
+            <?php
+                        }
+                    }
+                }
+            ?>
+        </div>
+    </div>
     <?php
         }
     ?>

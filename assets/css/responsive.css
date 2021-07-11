@@ -32,4 +32,11 @@
     .border-bottom{
         border-bottom: 1px solid whitesmoke !important;
     }
+    .cat-news{
+        margin-right:1.5px !important;
+        width: auto !important;
+    }
+    .donation-box{
+        width: 90% !important;
+    }
 }

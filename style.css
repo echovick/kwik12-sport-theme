@@ -2,7 +2,7 @@
     Theme Name: Kwik12 Wordpress Theme
     Author: Victor Eze
     Description: Wordpress theme for kwik12 sports site
-    Version: 1.0.0
+    Version: 1.0.1
 */
 /* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,400;0,500;0,600;0,700;1,100&display=swap');
@@ -40,6 +40,9 @@ nav, .sub-nav, main, footer, .main-post-content{
 .txt-sm{
     font-size:12px !important;
 }
+.txt-xsm{
+    font-size: 11px !important;
+}
 .txt-md{
     font-size:15px !important;
 }
@@ -54,6 +57,15 @@ nav, .sub-nav, main, footer, .main-post-content{
 }
 .w-90{
     width: 90%;
+}
+.w-80{
+    width: 80%;
+}
+.w-70{
+    width: 70%;
+}
+.w-60{
+    width: 60%;
 }
 .live-matches .img{
     height:400px;
@@ -103,4 +115,37 @@ nav, .sub-nav, main, footer, .main-post-content{
 
 .wp-block-image img {
     height:auto !important;
+}
+.cat-news{
+    width: 100%;
+}
+.contact-section{
+    width: 70%;
+    margin:5% 0% 5% 0%;
+    padding:2% 2% 2% 2%;
+    border-radius: 6px;
+}
+input, textarea{
+    border:1px solid grey;
+    border-radius: 6px;
+    padding:3% 3% 3% 3%;
+    outline: none !important;
+}
+textarea{
+    width: 97%;
+}
+
+.latest-news-section{
+    width:100% !important;
+    margin:5% 0% 5% 0%;
+}
+
+.donation-box{
+    width:70%;
+    margin: 5% 0% 5% 0%;
+    padding: 3% 5% 5% 5%;
+}
+.about-section{
+    padding:5% 5% 5% 5%;
+    margin: 5% 5% 5% 5%;
 }
