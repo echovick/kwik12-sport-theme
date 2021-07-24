@@ -26,6 +26,8 @@
         }
     }
 
+    include 'process.php';
+
     add_theme_support( 'post-thumbnails' );
 
     function theme_features(){

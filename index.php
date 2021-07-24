@@ -28,7 +28,7 @@
     </div>
 </div> -->
 <main>
-    <div class="row live-matches bg-red w-100">
+    <div class="row live-matches w-100">
         <!-- For headlines -->
         <?php
             if($banner_view == 'Headline'){
@@ -52,25 +52,25 @@
                 $other_live_matches = $live_stream_settings['other_live_matches'] ?? '';
         ?>
         <!-- For live stream -->
-        <div class="col-md-8 col-12 img-container" style="padding-left: 0px !important;">
+        <div class="col-md-8 col-12 bg-blue img-container" style="padding-left: 0px !important;">
             <iframe allowfullscreen="" border="0" frameborder="0" height="400" scrolling="no" src="<?php echo $embed_link?>" name="I1" style="width:100% !important;"></iframe>
         </div>
         <?php
             }
         ?>
 
-        <div class="col-md-4 col-12 desktop">
+        <div class="col-md-4 bg-blue col-12">
             <?php
                 if($banner_view == 'Live'){
             ?>
             <a href="">
-                <div class="bg-red text-light p-4">
+                <div class="text-light py-4">
                     <p class="txt-sm">Live Now</p>
                     <p class="txt-lg txt-bold"><?php echo $live_teams_playing?></p>
                 </div>
             </a>
             <hr>
-            <div class="bg-red text-light p-4">
+            <div class="text-light py-4">
                 <p class="txt-sm">Other Live Matches</p>
                 <?php
                     if(is_array($other_live_matches)){
@@ -226,7 +226,7 @@
         </div>
         <div class="top-new-menu row w-100">
             <div class="row w-100 px-5">
-                <a href="" class="mr-3 mb-1 txt-md text-light">
+                <a href="<?php echo site_url('all')?>" class="mr-3 mb-1 txt-md text-light">
                     All Posts
                 </a>
                 <?php

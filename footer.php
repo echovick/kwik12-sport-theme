@@ -13,6 +13,7 @@
         </div>
     </div>
 </footer>
+<?php echo session_destroy()?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js" type="22bf10955351dcb011de1d8b-text/javascript"></script>
 <script type="22bf10955351dcb011de1d8b-text/javascript">

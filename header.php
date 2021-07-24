@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,11 +9,20 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <?php
             $page_type = rwmb_meta('page_type');
-            if(isset($page_type)){
-                if($page_type !== "Live Match"){
-                    echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+            $banner_view = rwmb_meta('banner_view');
+            if(isset($page_type) || isset($banner_view)){
+                if($page_type == "Live Match"){
+                    $responsive = "";
+                }else{
+                    $responsive = '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+                }
+                if($banner_view == "Live"){
+                    $responsive = "";
+                }else{
+                    $responsive = '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
                 }
             }
+            echo $responsive;
         ?>
         <title>Kwik12.com</title>
         <?php wp_head();?>
@@ -31,7 +43,7 @@
             <div class="row w-100">
                 <div class="col-md-3">
                     <a href="<?php echo site_url()?>">
-                        <img src="<?php echo $website_logo[0]?>" alt="" class="w-100">
+                        <img src="<?php echo get_theme_file_uri('assets/imgs/kwiklogo.png')?>" alt="" class="w-100">
                     </a>
                 </div>
                 <div class="col-md-5 mt-3">
