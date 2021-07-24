@@ -3,16 +3,34 @@
     $post_id = get_the_id();
     $image = get_metabox_image_url('upload_featured_image');
     $content_section_group = rwmb_meta('content_section_group');
+    $page_type = rwmb_meta('page_type');
     $date = get_the_date();
     $date = date_create($date);
 ?>
 <div class="post-header" style="background: url('<?php echo $image?>');">
-    <p class="txt-md txt-light">Home / News / <?php echo the_title()?></p>
+    <p class="txt-lg txt-bold">Home / News / <?php echo the_title()?></p>
 </div>
 <div class="main-post-content mt-5 row w-100">
     <div class="col-md-8">
-    <p class="txt-xlg txt-dark txt-bold"><u><?php the_title()?></u></p>
-        <img src="<?php echo get_metabox_image_url('upload_featured_image');?>" alt="" class="rounded w-100" style="height:auto; object-fit:cover;">
+        <p class="txt-xlg txt-dark txt-bold"><u><?php the_title()?></u></p>
+        <?php
+            if($page_type == "Live Match"){
+                $stream_link = rwmb_meta('stream_link');
+        ?>
+            <div class="">
+                <iframe allowfullscreen="" border="0" frameborder="0" height="400" scrolling="no" src="<?php echo $stream_link?>" name="I1" style="width:100% !important;"></iframe>
+            </div>
+            <div class="text-center mx-auto mt-3">
+                <p class="txt-md mx-auto"><b>Disclaimer:</b> This stream found for free on the internet, we do not stream or host it, if
+                    you think its illegal please send us a notification via contact form and we will remove the page
+                    immediately.</p>
+                <p class="txt-md mx-auto">kwik12.com does not stream or host any audio or video straming content, we only link to the
+                    channels and we dont take any responsibility about thos streamed channels.</p>
+            </div>
+        <?php
+            }else{
+        ?>
+        <img src="<?php echo get_metabox_image_url('upload_featured_image');?>" alt="" class="rounded w-100" style="height:300px; object-fit:cover;">
         <div class="post-content py-4 text-justify">
             <p class="txt-red txt-sm">
                 <?php
@@ -111,6 +129,9 @@
                 ?>
             </div>
         </div>
+        <?php    
+            }
+        ?>
     </div>
     <div class="col-md-4">
         <div class="top-news-header bg-blue-dark w-100 row">

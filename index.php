@@ -49,13 +49,11 @@
             }elseif($banner_view == 'Live'){
                 $embed_link = $live_stream_settings['embed_link'] ?? '';
                 $live_teams_playing = $live_stream_settings['live_teams_playing'] ?? '';
-                $upcoming_matches = $live_stream_settings['upcoming_matches'] ?? '';
+                $other_live_matches = $live_stream_settings['other_live_matches'] ?? '';
         ?>
         <!-- For live stream -->
         <div class="col-md-8 col-12 img-container" style="padding-left: 0px !important;">
-            <div id="player"></div>
-            <!-- <video data-html5-video="" preload="metadata" src="blob:https://bng.goalarab.com/ba515919-5861-494e-a5c6-f8a492224d89"></video> -->
-            <!-- <iframe style="width:100%; height:100%; border:none;" src="<?php echo $embed_link;?>"></iframe> -->
+            <iframe allowfullscreen="" border="0" frameborder="0" height="400" scrolling="no" src="<?php echo $embed_link?>" name="I1" style="width:100% !important;"></iframe>
         </div>
         <?php
             }
@@ -73,29 +71,34 @@
             </a>
             <hr>
             <div class="bg-red text-light p-4">
-                <p class="txt-sm">Upcoming Matches</p>
+                <p class="txt-sm">Other Live Matches</p>
                 <?php
-                        foreach($upcoming_matches as $matches){
-                            $upcoming_match_date = $matches['upcoming_match_date'];
-                            $upcoming_match_date = date_create($upcoming_match_date);
-                    ?>
-                <p class="txt-md"><?php echo $matches['upcoming_teams_playing']?> -
-                    <?php echo date_format($upcoming_match_date,'d M, Y')?></p>
+                    if(is_array($other_live_matches)){
+                        foreach($other_live_matches as $matches){
+                            $post_link = get_permalink($matches['live_match_post']);
+                ?>
+                    <a href="<?php echo $post_link?>" target="_blank"><p class="txt-md text-light"><?php echo $matches['teams_playing'] ?? ''?></p></a>
                 <hr>
                 <?php
                         }
-                    ?>
+                    }else{
+                        echo '<p class="txt-md">No Live Matches Available</p>';
+                    }
+                ?>
             </div>
             <?php
                 }elseif($banner_view == 'Headline'){
                     $other_headlines = $other_headliners['other_headlines'];
                     foreach($other_headlines as $headlines){
                         $the_headline = get_post($headlines);
+                        $date = $the_headline->post_date;
+                        $date = date_create($date);
+
             ?>
             <!-- Healine -->
             <a href="">
                 <div class="row bg-red text-light p-4">
-                    <p class="txt-sm">September 8, 2018</p>
+                    <p class="txt-sm"><?php echo date_format($date,'M d, Y');?></p>
                     <p class="txt-lg txt-bold"><?php echo $the_headline->post_title;?></p>
                 </div>
             </a>
@@ -135,11 +138,13 @@
                     $other_headlines = $other_headliners['other_headlines'];
                     foreach($other_headlines as $headlines){
                         $the_headline = get_post($headlines);
+                        $date = $the_headline->post_date;
+                        $date = date_create($date);
             ?>
             <!-- Healine -->
             <a href="">
                 <div class="row bg-red text-light p-4">
-                    <p class="txt-sm">September 8, 2018</p>
+                    <p class="txt-sm"><?php echo date_format($date,'M d, Y');?></p>
                     <p class="txt-lg txt-bold"><?php echo $the_headline->post_title;?></p>
                 </div>
             </a>
@@ -292,7 +297,7 @@
             </div>
             <div class="py-4 px-3 row w-100 shadow">
                 <?php
-                    $query = new WP_Query(array('post_type'=>'post', 'posts_per_page'=>'-1'));
+                    $query = new WP_Query(array('post_type'=>'post', 'posts_per_page'=> rwmb_meta('number_of_posts')));
                     while($query->have_posts()):$query->the_post();
                         $post_id = get_the_id();
                         $the_post = get_post($post_id);
@@ -307,7 +312,7 @@
                 ?>
                 <div class="row w-100 mb-3">
                     <div class="col-md-4 mb-3">
-                        <img src="<?php if(($image)){echo $image[0];}else{echo get_theme_file_uri('/assets/imgs/image.png');}?>"
+                        <img src="<?php echo $image[0];?>"
                             alt="" class="w-100 rounded" style="height:100%; object-fit:cover;">
                     </div>
                     <div class="col-md-8">

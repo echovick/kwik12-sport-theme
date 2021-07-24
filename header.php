@@ -4,7 +4,14 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <?php
+            $page_type = rwmb_meta('page_type');
+            if(isset($page_type)){
+                if($page_type !== "Live Match"){
+                    echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+                }
+            }
+        ?>
         <title>Kwik12.com</title>
         <?php wp_head();?>
         <meta name="referrer" content="no-referrer" />
